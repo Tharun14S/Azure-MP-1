@@ -1,54 +1,31 @@
-# Program make a simple calculator
+from flask import Flask, render_template, request
 
-# This function adds two numbers
-def add(x, y):
-    return x + y
-
-# This function subtracts two numbers
-def subtract(x, y):
-    return x - y
-
-# This function multiplies two numbers
-def multiply(x, y):
-    return x * y
-
-# This function divides two numbers
-def divide(x, y):
-    return x / y
+app = Flask(__name__)
+app.config.from_object(__name__)
 
 
-print("Select operation.")
-print("1.Add")
-print("2.Subtract")
-print("3.Multiply")
-print("4.Divide")
+@app.route('/')
+def welcome():
+    return render_template('form.html')
 
-while True:
-    # take input from the user
-    choice = input("Enter choice(1/2/3/4): ")
 
-    # check if choice is one of the four options
-    if choice in ('1', '2', '3', '4'):
-        num1 = float(input("Enter first number: "))
-        num2 = float(input("Enter second number: "))
-
-        if choice == '1':
-            print(num1, "+", num2, "=", add(num1, num2))
-
-        elif choice == '2':
-            print(num1, "-", num2, "=", subtract(num1, num2))
-
-        elif choice == '3':
-            print(num1, "*", num2, "=", multiply(num1, num2))
-
-        elif choice == '4':
-            print(num1, "/", num2, "=", divide(num1, num2))
-        
-        # check if user wants another calculation
-        # break the while loop if answer is no
-        next_calculation = input("Let's do next calculation? (yes/no): ")
-        if next_calculation == "no":
-          break
-    
+@app.route('/result', methods=['POST'])
+def result():
+    var_1 = request.form.get("var_1", type=int)
+    var_2 = request.form.get("var_2", type=int)
+    operation = request.form.get("operation")
+    if(operation == 'Addition'):
+        result = var_1 + var_2
+    elif(operation == 'Subtraction'):
+        result = var_1 - var_2
+    elif(operation == 'Multiplication'):
+        result = var_1 * var_2
+    elif(operation == 'Division'):
+        result = var_1 / var_2
     else:
-        print("Invalid Input")
+        result = 'INVALID CHOICE'
+    entry = result
+    return render_template('result.html', entry=entry)
+
+if __name__ == '__main__':
+    app.run(debug=True)
